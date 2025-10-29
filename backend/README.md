@@ -66,6 +66,40 @@ backend/
 
 ## Тестирование
 
+### Unit тесты (без БД)
+
+```bash
+# Запустить все unit тесты
+pytest -m unit -v
+
+# Запустить тесты моделей
+pytest tests/test_models.py -v
+```
+
+### Integration тесты (требуют PostgreSQL)
+
+```bash
+# Запустить integration тесты
+pytest -m integration -v
+
+# Запустить тесты подключения к БД
+pytest tests/test_database.py -v
+```
+
+### Все тесты
+
+```bash
+# Запустить все тесты
+pytest -v
+
+# С покрытием кода
+pytest --cov=app --cov-report=html
+```
+
+**См. [tests/README.md](tests/README.md) для детальной документации по тестированию.**
+
+### Проверка API
+
 ```bash
 # Проверить health endpoint
 curl http://localhost:8000/api/v1/health
