@@ -1,1 +1,1 @@
-# frantai
+# FrantAI
