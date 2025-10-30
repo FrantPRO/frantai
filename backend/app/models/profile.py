@@ -1,7 +1,19 @@
-from sqlalchemy import Column, Integer, String, Text, Date, Boolean, Float, ForeignKey, TIMESTAMP, JSON
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Text,
+    Date,
+    Boolean,
+    Float,
+    ForeignKey,
+    TIMESTAMP,
+    JSON,
+)
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.database import Base
+
 
 class ProfileBasics(Base):
     __tablename__ = "profile_basics"
@@ -18,7 +30,10 @@ class ProfileBasics(Base):
     summary = Column(Text)
     bio = Column(Text)
     avatar_url = Column(String(300))
-    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+    updated_at = Column(
+        TIMESTAMP, server_default=func.now(), onupdate=func.now()
+    )
+
 
 class WorkExperience(Base):
     __tablename__ = "work_experience"
@@ -34,7 +49,10 @@ class WorkExperience(Base):
     achievements = Column(JSON)  # List of strings
     technologies = Column(JSON)  # List of strings
     order_index = Column(Integer, default=0)
-    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+    updated_at = Column(
+        TIMESTAMP, server_default=func.now(), onupdate=func.now()
+    )
+
 
 class SkillCategory(Base):
     __tablename__ = "skill_categories"
@@ -43,19 +61,27 @@ class SkillCategory(Base):
     name = Column(String(100), nullable=False, unique=True)
     order_index = Column(Integer, default=0)
 
-    skills = relationship("Skill", back_populates="category", cascade="all, delete-orphan")
+    skills = relationship(
+        "Skill", back_populates="category", cascade="all, delete-orphan"
+    )
+
 
 class Skill(Base):
     __tablename__ = "skills"
 
     id = Column(Integer, primary_key=True, index=True)
-    category_id = Column(Integer, ForeignKey("skill_categories.id", ondelete="CASCADE"))
+    category_id = Column(
+        Integer, ForeignKey("skill_categories.id", ondelete="CASCADE")
+    )
     name = Column(String(100), nullable=False)
-    proficiency_level = Column(String(50))  # beginner, intermediate, advanced, expert
+    proficiency_level = Column(
+        String(50)
+    )  # beginner, intermediate, advanced, expert
     years_of_experience = Column(Float)
     order_index = Column(Integer, default=0)
 
     category = relationship("SkillCategory", back_populates="skills")
+
 
 class Project(Base):
     __tablename__ = "projects"
@@ -74,7 +100,10 @@ class Project(Base):
     highlights = Column(JSON)  # List of strings
     order_index = Column(Integer, default=0)
     is_featured = Column(Boolean, default=False)
-    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+    updated_at = Column(
+        TIMESTAMP, server_default=func.now(), onupdate=func.now()
+    )
+
 
 class Education(Base):
     __tablename__ = "education"
@@ -90,13 +119,17 @@ class Education(Base):
     description = Column(Text)
     order_index = Column(Integer, default=0)
 
+
 class Language(Base):
     __tablename__ = "languages"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
-    proficiency = Column(String(50))  # native, fluent, professional, intermediate, basic
+    proficiency = Column(
+        String(50)
+    )  # native, fluent, professional, intermediate, basic
     order_index = Column(Integer, default=0)
+
 
 class Certification(Base):
     __tablename__ = "certifications"

@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 from pgvector.sqlalchemy import Vector
 from app.database import Base
 
+
 class KnowledgeChunk(Base):
     __tablename__ = "knowledge_chunks"
 
@@ -14,6 +15,4 @@ class KnowledgeChunk(Base):
     chunk_metadata = Column(JSON)
     created_at = Column(TIMESTAMP, server_default=func.now())
 
-    __table_args__ = (
-        Index('idx_chunks_source', 'source_table', 'source_id'),
-    )
+    __table_args__ = (Index("idx_chunks_source", "source_table", "source_id"),)

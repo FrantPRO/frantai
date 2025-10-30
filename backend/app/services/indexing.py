@@ -2,6 +2,7 @@
 Indexing service for creating and managing knowledge chunks.
 Automatically converts profile data into searchable embeddings.
 """
+
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
@@ -9,19 +10,30 @@ from sqlalchemy.orm import selectinload
 import logging
 
 from app.models.profile import (
-    ProfileBasics, WorkExperience, SkillCategory, Skill,
-    Project, Education, Language, Certification
+    ProfileBasics,
+    WorkExperience,
+    SkillCategory,
+    Skill,
+    Project,
+    Education,
+    Language,
+    Certification,
 )
 from app.models.knowledge import KnowledgeChunk
 from app.services.embeddings import get_embedding_service
 from app.services.text_utils import chunk_text
 from app.services.formatters import (
-    format_profile_basics, format_work_experience,
-    format_project, format_education, format_language,
-    format_certification, format_skill_category
+    format_profile_basics,
+    format_work_experience,
+    format_project,
+    format_education,
+    format_language,
+    format_certification,
+    format_skill_category,
 )
 
 logger = logging.getLogger(__name__)
+
 
 class IndexingService:
     """Service for indexing profile data into knowledge chunks"""
@@ -61,13 +73,15 @@ class IndexingService:
                 source_id=basics_id,
                 chunk_text=chunk,
                 embedding=embedding,
-                chunk_metadata={"name": basics.full_name}
+                chunk_metadata={"name": basics.full_name},
             )
             self.db.add(knowledge_chunk)
             chunks_created += 1
 
         await self.db.commit()
-        logger.info(f"Indexed ProfileBasics {basics_id}: {chunks_created} chunks created")
+        logger.info(
+            f"Indexed ProfileBasics {basics_id}: {chunks_created} chunks created"
+        )
         return chunks_created
 
     async def index_work_experience(self, exp_id: int) -> int:
@@ -97,8 +111,8 @@ class IndexingService:
                 embedding=embedding,
                 chunk_metadata={
                     "company": exp.company_name,
-                    "position": exp.position
-                }
+                    "position": exp.position,
+                },
             )
             self.db.add(knowledge_chunk)
             chunks_created += 1
@@ -131,7 +145,7 @@ class IndexingService:
                 source_id=project_id,
                 chunk_text=chunk,
                 embedding=embedding,
-                chunk_metadata={"project_name": project.name}
+                chunk_metadata={"project_name": project.name},
             )
             self.db.add(knowledge_chunk)
             chunks_created += 1
@@ -164,7 +178,7 @@ class IndexingService:
             source_id=category_id,
             chunk_text=text,
             embedding=embedding,
-            chunk_metadata={"category": category.name}
+            chunk_metadata={"category": category.name},
         )
         self.db.add(knowledge_chunk)
 
@@ -192,7 +206,7 @@ class IndexingService:
             source_id=edu_id,
             chunk_text=text,
             embedding=embedding,
-            chunk_metadata={"institution": edu.institution}
+            chunk_metadata={"institution": edu.institution},
         )
         self.db.add(knowledge_chunk)
 
@@ -208,7 +222,7 @@ class IndexingService:
             "projects": 0,
             "skill_categories": 0,
             "education": 0,
-            "total_chunks": 0
+            "total_chunks": 0,
         }
 
         # Index basics
@@ -233,7 +247,9 @@ class IndexingService:
         result = await self.db.execute(select(SkillCategory))
         categories = result.scalars().all()
         for category in categories:
-            stats["skill_categories"] += await self.index_skill_category(category.id)
+            stats["skill_categories"] += await self.index_skill_category(
+                category.id
+            )
 
         # Index education
         result = await self.db.execute(select(Education))
@@ -241,7 +257,9 @@ class IndexingService:
         for edu in educations:
             stats["education"] += await self.index_education(edu.id)
 
-        stats["total_chunks"] = sum(v for k, v in stats.items() if k != "total_chunks")
+        stats["total_chunks"] = sum(
+            v for k, v in stats.items() if k != "total_chunks"
+        )
 
         logger.info(f"Full reindex completed: {stats}")
         return stats
@@ -251,6 +269,6 @@ class IndexingService:
         await self.db.execute(
             delete(KnowledgeChunk).where(
                 KnowledgeChunk.source_table == source_table,
-                KnowledgeChunk.source_id == source_id
+                KnowledgeChunk.source_id == source_id,
             )
         )

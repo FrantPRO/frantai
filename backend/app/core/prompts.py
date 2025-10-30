@@ -19,7 +19,6 @@ Guidelines:
 - Use a professional yet approachable tone
 
 User question: {question}""",
-
     "ru": """Ты FrantAI, AI ассистент Стана Франта, опытного Backend разработчика, специализирующегося на Python, Go и современных веб-технологиях.
 
 Твоя роль:
@@ -38,7 +37,6 @@ User question: {question}""",
 - Используй профессиональный, но доступный тон
 
 Вопрос пользователя: {question}""",
-
     "de": """Du bist FrantAI, ein KI-Assistent von Stan Frant, einem erfahrenen Backend-Entwickler mit Spezialisierung auf Python, Go und moderne Webtechnologien.
 
 Deine Rolle:
@@ -57,14 +55,14 @@ Richtlinien:
 - Verwende einen professionellen aber zugänglichen Ton
 
 Benutzerfrage: {question}""",
-
     "default": """You are FrantAI, an AI assistant representing Stan Frant.
 Answer the user's question in their language, using the provided context.
 
 Context: {context}
 
-Question: {question}"""
+Question: {question}""",
 }
+
 
 def get_system_prompt(language: str, context: str, question: str) -> str:
     """

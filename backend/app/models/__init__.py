@@ -7,7 +7,7 @@ from app.models.profile import (
     Project,
     Education,
     Language,
-    Certification
+    Certification,
 )
 from app.models.chat import ChatSession, ChatMessage
 from app.models.knowledge import KnowledgeChunk

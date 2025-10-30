@@ -6,6 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class EmbeddingService:
     """Service for generating text embeddings using multilingual-e5-base"""
 
@@ -55,7 +56,9 @@ class EmbeddingService:
         return self.model.get_sentence_embedding_dimension()
 
     @staticmethod
-    def cosine_similarity(embedding1: List[float], embedding2: List[float]) -> float:
+    def cosine_similarity(
+        embedding1: List[float], embedding2: List[float]
+    ) -> float:
         """Calculate cosine similarity between two embeddings"""
         vec1 = np.array(embedding1)
         vec2 = np.array(embedding2)
@@ -69,13 +72,16 @@ class EmbeddingService:
 
         return float(dot_product / (norm1 * norm2))
 
+
 # Global instance (singleton pattern)
 _embedding_service: Optional[EmbeddingService] = None
+
 
 def get_embedding_service() -> EmbeddingService:
     """Get or create global embedding service instance"""
     global _embedding_service
     if _embedding_service is None:
         from app.config import settings
+
         _embedding_service = EmbeddingService(settings.embedding_model)
     return _embedding_service

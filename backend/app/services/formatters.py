@@ -2,11 +2,19 @@
 Formatters for converting database models to text chunks.
 Used by indexing service to create searchable content.
 """
+
 from typing import List
 from app.models.profile import (
-    ProfileBasics, WorkExperience, Project,
-    Education, Language, Certification, Skill, SkillCategory
+    ProfileBasics,
+    WorkExperience,
+    Project,
+    Education,
+    Language,
+    Certification,
+    Skill,
+    SkillCategory,
 )
+
 
 def format_profile_basics(basics: ProfileBasics) -> str:
     """Format ProfileBasics into searchable text"""
@@ -42,6 +50,7 @@ def format_profile_basics(basics: ProfileBasics) -> str:
 
     return "\n".join(parts)
 
+
 def format_work_experience(exp: WorkExperience) -> str:
     """Format WorkExperience into searchable text"""
     parts = []
@@ -50,7 +59,13 @@ def format_work_experience(exp: WorkExperience) -> str:
     parts.append(f"Position: {exp.position} at {exp.company_name}")
 
     # Period
-    end_date = "Present" if exp.is_current else exp.end_date.strftime("%B %Y") if exp.end_date else "Unknown"
+    end_date = (
+        "Present"
+        if exp.is_current
+        else exp.end_date.strftime("%B %Y")
+        if exp.end_date
+        else "Unknown"
+    )
     start_date = exp.start_date.strftime("%B %Y")
     parts.append(f"Period: {start_date} - {end_date}")
 
@@ -72,6 +87,7 @@ def format_work_experience(exp: WorkExperience) -> str:
         parts.append(f"\nTechnologies used: {', '.join(exp.technologies)}")
 
     return "\n".join(parts)
+
 
 def format_project(project: Project) -> str:
     """Format Project into searchable text"""
@@ -106,6 +122,7 @@ def format_project(project: Project) -> str:
 
     return "\n".join(parts)
 
+
 def format_education(edu: Education) -> str:
     """Format Education into searchable text"""
     parts = []
@@ -132,12 +149,14 @@ def format_education(edu: Education) -> str:
 
     return "\n".join(parts)
 
+
 def format_language(lang: Language) -> str:
     """Format Language into searchable text"""
     text = f"Language: {lang.name}"
     if lang.proficiency:
         text += f" (Proficiency: {lang.proficiency})"
     return text
+
 
 def format_certification(cert: Certification) -> str:
     """Format Certification into searchable text"""
@@ -158,6 +177,7 @@ def format_certification(cert: Certification) -> str:
         parts.append(f"Credential URL: {cert.credential_url}")
 
     return "\n".join(parts)
+
 
 def format_skill_category(category: SkillCategory, skills: List[Skill]) -> str:
     """Format SkillCategory with skills into searchable text"""

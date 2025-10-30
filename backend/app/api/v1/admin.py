@@ -3,10 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from datetime import datetime, date
 from app.api.deps import get_db, verify_admin_access
-from app.schemas.profile import (
-    ProfileUpdateRequest,
-    CompleteProfileResponse
-)
+from app.schemas.profile import ProfileUpdateRequest, CompleteProfileResponse
 from app.models.profile import (
     ProfileBasics,
     WorkExperience,
@@ -15,10 +12,11 @@ from app.models.profile import (
     Project,
     Education,
     Language,
-    Certification
+    Certification,
 )
 
 router = APIRouter()
+
 
 def convert_dates_in_dict(data: dict) -> dict:
     """Convert date strings to date objects in a dictionary"""
@@ -26,7 +24,12 @@ def convert_dates_in_dict(data: dict) -> dict:
     for key, value in data.items():
         if value and isinstance(value, str):
             # Try to parse as date
-            if '_date' in key or key in ['start_date', 'end_date', 'issue_date', 'expiry_date']:
+            if "_date" in key or key in [
+                "start_date",
+                "end_date",
+                "issue_date",
+                "expiry_date",
+            ]:
                 try:
                     result[key] = datetime.fromisoformat(value).date()
                 except (ValueError, AttributeError):
@@ -36,6 +39,7 @@ def convert_dates_in_dict(data: dict) -> dict:
         else:
             result[key] = value
     return result
+
 
 # Mapping section names to models
 SECTION_MODELS = {
@@ -49,21 +53,23 @@ SECTION_MODELS = {
     "certifications": Certification,
 }
 
+
 @router.get("/profile", response_model=CompleteProfileResponse)
 async def get_admin_profile(
-    db: AsyncSession = Depends(get_db),
-    _: bool = Depends(verify_admin_access)
+    db: AsyncSession = Depends(get_db), _: bool = Depends(verify_admin_access)
 ):
     """Get complete profile (admin version - same as public for now)"""
     # Import here to avoid circular dependency
     from app.api.v1.profile import get_complete_profile
+
     return await get_complete_profile(db)
+
 
 @router.put("/profile")
 async def update_profile_section(
     request: ProfileUpdateRequest,
     db: AsyncSession = Depends(get_db),
-    _: bool = Depends(verify_admin_access)
+    _: bool = Depends(verify_admin_access),
 ):
     """
     Update profile section.
@@ -73,7 +79,7 @@ async def update_profile_section(
     if not model:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid section: {request.section}"
+            detail=f"Invalid section: {request.section}",
         )
 
     if request.action == "create":
@@ -81,7 +87,7 @@ async def update_profile_section(
         if not request.data:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Data required for create action"
+                detail="Data required for create action",
             )
         # Convert date strings to date objects
         converted_data = convert_dates_in_dict(request.data)
@@ -93,7 +99,7 @@ async def update_profile_section(
         return {
             "success": True,
             "message": f"{request.section} created",
-            "id": instance.id
+            "id": instance.id,
         }
 
     elif request.action == "update":
@@ -101,7 +107,7 @@ async def update_profile_section(
         if not request.id or not request.data:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="ID and data required for update action"
+                detail="ID and data required for update action",
             )
 
         result = await db.execute(select(model).where(model.id == request.id))
@@ -110,7 +116,7 @@ async def update_profile_section(
         if not instance:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"{request.section} with id {request.id} not found"
+                detail=f"{request.section} with id {request.id} not found",
             )
 
         # Convert date strings to date objects
@@ -124,7 +130,7 @@ async def update_profile_section(
         return {
             "success": True,
             "message": f"{request.section} updated",
-            "id": instance.id
+            "id": instance.id,
         }
 
     elif request.action == "delete":
@@ -132,45 +138,41 @@ async def update_profile_section(
         if not request.id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="ID required for delete action"
+                detail="ID required for delete action",
             )
 
-        result = await db.execute(
-            delete(model).where(model.id == request.id)
-        )
+        result = await db.execute(delete(model).where(model.id == request.id))
 
         if result.rowcount == 0:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"{request.section} with id {request.id} not found"
+                detail=f"{request.section} with id {request.id} not found",
             )
 
         await db.commit()
 
-        return {
-            "success": True,
-            "message": f"{request.section} deleted"
-        }
+        return {"success": True, "message": f"{request.section} deleted"}
 
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid action: {request.action}"
+            detail=f"Invalid action: {request.action}",
         )
+
 
 @router.delete("/profile/section/{table}/{id}")
 async def delete_section_item(
     table: str,
     id: int,
     db: AsyncSession = Depends(get_db),
-    _: bool = Depends(verify_admin_access)
+    _: bool = Depends(verify_admin_access),
 ):
     """Delete specific item from any table"""
     model = SECTION_MODELS.get(table)
     if not model:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid table: {table}"
+            detail=f"Invalid table: {table}",
         )
 
     result = await db.execute(delete(model).where(model.id == id))
@@ -178,18 +180,19 @@ async def delete_section_item(
     if result.rowcount == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Item with id {id} not found in {table}"
+            detail=f"Item with id {id} not found in {table}",
         )
 
     await db.commit()
 
     return {"success": True, "message": f"Item deleted from {table}"}
 
+
 @router.post("/reindex")
 async def reindex_knowledge_base(
     tables: list[str] = None,
     db: AsyncSession = Depends(get_db),
-    _: bool = Depends(verify_admin_access)
+    _: bool = Depends(verify_admin_access),
 ):
     """
     Reindex all or specific profile data into knowledge chunks.
@@ -217,7 +220,9 @@ async def reindex_knowledge_base(
             result = await db.execute(select(ProfileBasics))
             basics = result.scalar_one_or_none()
             if basics:
-                stats["profile_basics"] = await indexing_service.index_profile_basics(basics.id)
+                stats[
+                    "profile_basics"
+                ] = await indexing_service.index_profile_basics(basics.id)
 
         if "work_experience" in tables:
             result = await db.execute(select(WorkExperience))
@@ -240,7 +245,9 @@ async def reindex_knowledge_base(
             categories = result.scalars().all()
             chunks = 0
             for category in categories:
-                chunks += await indexing_service.index_skill_category(category.id)
+                chunks += await indexing_service.index_skill_category(
+                    category.id
+                )
             stats["skill_categories"] = chunks
 
         if "education" in tables:
@@ -255,8 +262,4 @@ async def reindex_knowledge_base(
 
     duration_ms = int((time.time() - start_time) * 1000)
 
-    return {
-        "success": True,
-        "stats": stats,
-        "duration_ms": duration_ms
-    }
+    return {"success": True, "stats": stats, "duration_ms": duration_ms}

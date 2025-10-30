@@ -3,6 +3,7 @@ from typing import Optional, List
 from datetime import date
 from enum import Enum
 
+
 # Enums
 class ProficiencyLevel(str, Enum):
     BEGINNER = "beginner"
@@ -10,12 +11,14 @@ class ProficiencyLevel(str, Enum):
     ADVANCED = "advanced"
     EXPERT = "expert"
 
+
 class LanguageProficiency(str, Enum):
     NATIVE = "native"
     FLUENT = "fluent"
     PROFESSIONAL = "professional"
     INTERMEDIATE = "intermediate"
     BASIC = "basic"
+
 
 # Base schemas
 class ProfileBasicsBase(BaseModel):
@@ -31,11 +34,13 @@ class ProfileBasicsBase(BaseModel):
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
 
+
 class ProfileBasicsResponse(ProfileBasicsBase):
     id: int
 
     class Config:
         from_attributes = True
+
 
 class WorkExperienceBase(BaseModel):
     company_name: str
@@ -49,21 +54,25 @@ class WorkExperienceBase(BaseModel):
     technologies: Optional[List[str]] = []
     order_index: int = 0
 
+
 class WorkExperienceResponse(WorkExperienceBase):
     id: int
 
     class Config:
         from_attributes = True
 
+
 class SkillCategoryBase(BaseModel):
     name: str
     order_index: int = 0
+
 
 class SkillBase(BaseModel):
     name: str
     proficiency_level: Optional[ProficiencyLevel] = None
     years_of_experience: Optional[float] = None
     order_index: int = 0
+
 
 class SkillResponse(SkillBase):
     id: int
@@ -72,12 +81,14 @@ class SkillResponse(SkillBase):
     class Config:
         from_attributes = True
 
+
 class SkillCategoryResponse(SkillCategoryBase):
     id: int
     skills: List[SkillResponse] = []
 
     class Config:
         from_attributes = True
+
 
 class ProjectBase(BaseModel):
     name: str
@@ -94,11 +105,13 @@ class ProjectBase(BaseModel):
     order_index: int = 0
     is_featured: bool = False
 
+
 class ProjectResponse(ProjectBase):
     id: int
 
     class Config:
         from_attributes = True
+
 
 class EducationBase(BaseModel):
     institution: str
@@ -111,22 +124,26 @@ class EducationBase(BaseModel):
     description: Optional[str] = None
     order_index: int = 0
 
+
 class EducationResponse(EducationBase):
     id: int
 
     class Config:
         from_attributes = True
 
+
 class LanguageBase(BaseModel):
     name: str
     proficiency: Optional[LanguageProficiency] = None
     order_index: int = 0
+
 
 class LanguageResponse(LanguageBase):
     id: int
 
     class Config:
         from_attributes = True
+
 
 class CertificationBase(BaseModel):
     name: str
@@ -137,11 +154,13 @@ class CertificationBase(BaseModel):
     credential_url: Optional[str] = None
     order_index: int = 0
 
+
 class CertificationResponse(CertificationBase):
     id: int
 
     class Config:
         from_attributes = True
+
 
 # Complete profile response
 class CompleteProfileResponse(BaseModel):
@@ -153,9 +172,10 @@ class CompleteProfileResponse(BaseModel):
     languages: List[LanguageResponse] = []
     certifications: List[CertificationResponse] = []
 
+
 # Admin schemas for updates
 class ProfileUpdateRequest(BaseModel):
     section: str  # "basics", "experience", "skills", etc.
-    action: str   # "create", "update", "delete"
+    action: str  # "create", "update", "delete"
     id: Optional[int] = None
     data: Optional[dict] = None

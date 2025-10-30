@@ -5,15 +5,11 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
+
 class OllamaService:
     """Service for interacting with Ollama LLM"""
 
-    def __init__(
-        self,
-        host: str = None,
-        model: str = None,
-        timeout: int = 120
-    ):
+    def __init__(self, host: str = None, model: str = None, timeout: int = 120):
         self.host = host or settings.ollama_host
         self.model = model or settings.ollama_model
         self.timeout = timeout
@@ -57,7 +53,7 @@ class OllamaService:
             "stream": False,
             "options": {
                 "temperature": temperature,
-            }
+            },
         }
 
         if system:
@@ -69,8 +65,7 @@ class OllamaService:
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 response = await client.post(
-                    f"{self.host}/api/generate",
-                    json=payload
+                    f"{self.host}/api/generate", json=payload
                 )
                 response.raise_for_status()
                 data = response.json()
@@ -96,7 +91,7 @@ class OllamaService:
             "stream": True,
             "options": {
                 "temperature": temperature,
-            }
+            },
         }
 
         if system:
@@ -108,9 +103,7 @@ class OllamaService:
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 async with client.stream(
-                    "POST",
-                    f"{self.host}/api/generate",
-                    json=payload
+                    "POST", f"{self.host}/api/generate", json=payload
                 ) as response:
                     response.raise_for_status()
 
@@ -118,6 +111,7 @@ class OllamaService:
                         if line.strip():
                             try:
                                 import json
+
                                 data = json.loads(line)
 
                                 if "response" in data:
@@ -134,8 +128,10 @@ class OllamaService:
             logger.error(f"Ollama streaming failed: {e}")
             raise
 
+
 # Global instance
 _ollama_service: Optional[OllamaService] = None
+
 
 def get_ollama_service() -> OllamaService:
     """Get or create global Ollama service instance"""

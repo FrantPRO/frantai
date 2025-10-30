@@ -1,0 +1,127 @@
+[tool.ruff]
+line-length = 80
+target-version = "py312"
+
+# Include only backend code
+include = ["backend/**/*.py"]
+exclude = [
+    ".venv",
+    "venv",
+    ".git",
+    "__pycache__",
+    "*.pyc",
+]
+
+[tool.ruff.lint]
+# Selected rule categories:
+# E, W - pycodestyle (style errors and warnings)
+# F - pyflakes (logical errors)
+# I - isort (import sorting)
+# N - pep8-naming (naming conventions)
+# UP - pyupgrade (modern Python syntax)
+# B - flake8-bugbear (bugs and anti-patterns)
+# A - flake8-builtins (shadowing built-in names)
+# ASYNC - flake8-async (async/await rules)
+# S - flake8-bandit (security)
+# C4 - flake8-comprehensions (comprehension optimization)
+# DTZ - flake8-datetimez (timezone-aware datetime)
+# T20 - flake8-print (forbid print in production code)
+# RET - flake8-return (simplify return statements)
+# SIM - flake8-simplify (code simplification)
+# ARG - flake8-unused-arguments (unused arguments)
+# PTH - flake8-use-pathlib (use pathlib instead of os.path)
+# PL - pylint (additional checks)
+# RUF - ruff-specific rules
+
+select = [
+    "E", "W",      # pycodestyle
+    "F",           # pyflakes
+    "I",           # isort
+    "N",           # pep8-naming
+    "UP",          # pyupgrade
+    "B",           # bugbear
+    "A",           # builtins
+    "ASYNC",       # async
+    "S",           # security
+    "C4",          # comprehensions
+    "DTZ",         # datetimez
+    "T20",         # print
+    "RET",         # return
+    "SIM",         # simplify
+    "ARG",         # unused arguments
+    "PTH",         # pathlib
+    "PL",          # pylint
+    "RUF",         # ruff-specific
+]
+
+# Ignored rules (customize for your project):
+ignore = [
+    "S101",    # assert usage (acceptable in tests)
+    "PLR0913", # too many arguments (sometimes necessary)
+    "ARG001",  # unused function argument (in FastAPI route handlers)
+    "ARG002",  # unused method argument (can be intentional in classes)
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Allow some things in tests:
+"backend/tests/**/*.py" = [
+    "S101",    # assert
+    "PLR2004", # magic values
+    "S105",    # hardcoded passwords in tests
+    "S106",    # hardcoded passwords
+]
+
+# For database migrations:
+"backend/**/migrations/**/*.py" = [
+    "N806",    # non-lowercase variable names
+]
+
+[tool.ruff.lint.isort]
+# Import sorting according to PEP 8
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder"
+]
+known-first-party = ["app"]
+
+[tool.ruff.lint.pydocstyle]
+# Google-style docstrings
+convention = "google"
+
+[tool.ruff.lint.pylint]
+max-args = 7       # maximum function arguments
+max-branches = 15  # maximum branches in function
+
+# ============================================================================
+# MyPy - gradual transition to strict typing
+# ============================================================================
+[tool.mypy]
+python_version = "3.12"
+
+# Basic checks (not too strict for start)
+check_untyped_defs = true       # check bodies of functions without types
+disallow_untyped_calls = false  # allow calls without types for now
+disallow_untyped_defs = false   # don't require types everywhere yet
+disallow_incomplete_defs = true # if you started typing, complete it
+
+# Strictness
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = false  # not strict with Any for now
+warn_unreachable = true
+strict_equality = true
+
+# For async code
+plugins = []
+
+# Ignore libraries without types
+ignore_missing_imports = true
+
+# Gradual strengthening: uncomment these lines when ready:
+# disallow_untyped_defs = true    # require types everywhere
+# disallow_any_unimported = true  # forbid Any from unknown modules
+# warn_return_any = true          # warn about returning Any
+# strict = true                   # maximum strictness

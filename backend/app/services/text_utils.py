@@ -5,6 +5,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def detect_language(text: str) -> str:
     """
     Detect language of text.
@@ -21,20 +22,22 @@ def detect_language(text: str) -> str:
         logger.warning(f"Language detection failed for text: {text[:50]}...")
         return "en"
 
+
 def estimate_tokens(text: str) -> int:
     """
     Estimate number of tokens in text.
     Rough approximation: 1 token ≈ 4 characters for English
     """
     # Simple heuristic: split by whitespace and punctuation
-    words = re.findall(r'\b\w+\b', text)
+    words = re.findall(r"\b\w+\b", text)
     return len(words)
+
 
 def chunk_text(
     text: str,
     max_tokens: int = 800,
     overlap: int = 150,
-    min_chunk_size: int = 100
+    min_chunk_size: int = 100,
 ) -> List[str]:
     """
     Split text into chunks with overlap.
@@ -71,7 +74,7 @@ def chunk_text(
         # If single sentence exceeds max_tokens, split it further
         if sentence_tokens > max_tokens:
             # Split by punctuation
-            sub_parts = re.split(r'[,;:]', sentence)
+            sub_parts = re.split(r"[,;:]", sentence)
             for part in sub_parts:
                 part = part.strip()
                 if not part:
@@ -82,12 +85,16 @@ def chunk_text(
                 if current_tokens + part_tokens > max_tokens:
                     # Save current chunk
                     if current_chunk and current_tokens >= min_chunk_size:
-                        chunks.append(' '.join(current_chunk))
+                        chunks.append(" ".join(current_chunk))
 
                     # Start new chunk with overlap
-                    overlap_sentences = get_overlap_sentences(current_chunk, overlap)
+                    overlap_sentences = get_overlap_sentences(
+                        current_chunk, overlap
+                    )
                     current_chunk = overlap_sentences + [part]
-                    current_tokens = sum(estimate_tokens(s) for s in current_chunk)
+                    current_tokens = sum(
+                        estimate_tokens(s) for s in current_chunk
+                    )
                 else:
                     current_chunk.append(part)
                     current_tokens += part_tokens
@@ -96,10 +103,12 @@ def chunk_text(
             if current_tokens + sentence_tokens > max_tokens:
                 # Save current chunk
                 if current_chunk and current_tokens >= min_chunk_size:
-                    chunks.append(' '.join(current_chunk))
+                    chunks.append(" ".join(current_chunk))
 
                 # Start new chunk with overlap
-                overlap_sentences = get_overlap_sentences(current_chunk, overlap)
+                overlap_sentences = get_overlap_sentences(
+                    current_chunk, overlap
+                )
                 current_chunk = overlap_sentences + [sentence]
                 current_tokens = sum(estimate_tokens(s) for s in current_chunk)
             else:
@@ -108,9 +117,10 @@ def chunk_text(
 
     # Add last chunk
     if current_chunk and current_tokens >= min_chunk_size:
-        chunks.append(' '.join(current_chunk))
+        chunks.append(" ".join(current_chunk))
 
     return chunks
+
 
 def split_into_sentences(text: str) -> List[str]:
     """
@@ -118,25 +128,28 @@ def split_into_sentences(text: str) -> List[str]:
     Handles common abbreviations and edge cases.
     """
     # Replace common abbreviations to avoid false splits
-    text = text.replace('Dr.', 'Dr<DOT>')
-    text = text.replace('Mr.', 'Mr<DOT>')
-    text = text.replace('Mrs.', 'Mrs<DOT>')
-    text = text.replace('Ms.', 'Ms<DOT>')
-    text = text.replace('Jr.', 'Jr<DOT>')
-    text = text.replace('Sr.', 'Sr<DOT>')
-    text = text.replace('e.g.', 'e<DOT>g<DOT>')
-    text = text.replace('i.e.', 'i<DOT>e<DOT>')
+    text = text.replace("Dr.", "Dr<DOT>")
+    text = text.replace("Mr.", "Mr<DOT>")
+    text = text.replace("Mrs.", "Mrs<DOT>")
+    text = text.replace("Ms.", "Ms<DOT>")
+    text = text.replace("Jr.", "Jr<DOT>")
+    text = text.replace("Sr.", "Sr<DOT>")
+    text = text.replace("e.g.", "e<DOT>g<DOT>")
+    text = text.replace("i.e.", "i<DOT>e<DOT>")
 
     # Split by sentence endings
-    sentences = re.split(r'(?<=[.!?])\s+', text)
+    sentences = re.split(r"(?<=[.!?])\s+", text)
 
     # Restore abbreviations
-    sentences = [s.replace('<DOT>', '.') for s in sentences]
+    sentences = [s.replace("<DOT>", ".") for s in sentences]
 
     # Filter out empty sentences
     return [s.strip() for s in sentences if s.strip()]
 
-def get_overlap_sentences(sentences: List[str], overlap_tokens: int) -> List[str]:
+
+def get_overlap_sentences(
+    sentences: List[str], overlap_tokens: int
+) -> List[str]:
     """
     Get sentences from the end that fit within overlap_tokens.
     """

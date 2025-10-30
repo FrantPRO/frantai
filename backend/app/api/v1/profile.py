@@ -11,10 +11,11 @@ from app.models.profile import (
     Project,
     Education,
     Language,
-    Certification
+    Certification,
 )
 
 router = APIRouter()
+
 
 @router.get("", response_model=CompleteProfileResponse)
 async def get_complete_profile(db: AsyncSession = Depends(get_db)):
@@ -42,8 +43,9 @@ async def get_complete_profile(db: AsyncSession = Depends(get_db)):
 
     # Projects (ordered, featured first)
     projects_result = await db.execute(
-        select(Project)
-        .order_by(Project.is_featured.desc(), Project.order_index)
+        select(Project).order_by(
+            Project.is_featured.desc(), Project.order_index
+        )
     )
     projects = projects_result.scalars().all()
 
@@ -72,5 +74,5 @@ async def get_complete_profile(db: AsyncSession = Depends(get_db)):
         projects=projects,
         education=education,
         languages=languages,
-        certifications=certifications
+        certifications=certifications,
     )
