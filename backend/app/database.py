@@ -20,10 +20,10 @@ AsyncSessionLocal = async_sessionmaker(
     autoflush=False
 )
 
-# Base class для моделей
+# Base class for models
 Base = declarative_base()
 
-# Dependency для FastAPI
+# Dependency for FastAPI
 async def get_db() -> AsyncSession:
     async with AsyncSessionLocal() as session:
         try:

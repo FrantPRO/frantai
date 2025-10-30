@@ -1,139 +1,139 @@
 # FrantAI Backend
 
-FastAPI backend для FrantAI проекта с поддержкой RAG, Ollama и PostgreSQL.
+FastAPI backend for FrantAI project with RAG, Ollama, and PostgreSQL support.
 
-## Быстрый старт
+## Quick Start
 
-### 1. Установка зависимостей
+### 1. Install Dependencies
 
 ```bash
-# Создать виртуальное окружение
+# Create virtual environment
 python3.12 -m venv venv
 
-# Активировать виртуальное окружение
+# Activate virtual environment
 source venv/bin/activate  # Linux/Mac
-# или
+# or
 venv\Scripts\activate  # Windows
 
-# Установить зависимости
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Конфигурация
+### 2. Configuration
 
 ```bash
-# Скопировать example конфигурацию
+# Copy example configuration
 cp .env.example .env
 
-# Отредактировать .env при необходимости
+# Edit .env if needed
 nano .env
 ```
 
-### 3. Запуск сервера
+### 3. Start Server
 
 ```bash
-# Development режим с hot reload
+# Development mode with hot reload
 uvicorn app.main:app --reload
 
-# Или используя python
+# Or using python
 python -m app.main
 ```
 
-Сервер будет доступен на http://localhost:8000
+Server will be available at http://localhost:8000
 
-## Доступные endpoints
+## Available Endpoints
 
 - `GET /` - Root endpoint
 - `GET /api/v1/health` - Health check
-- `GET /docs` - Swagger UI (интерактивная документация)
-- `GET /redoc` - ReDoc (альтернативная документация)
+- `GET /docs` - Swagger UI (interactive documentation)
+- `GET /redoc` - ReDoc (alternative documentation)
 
-## Структура проекта
+## Project Structure
 
 ```
 backend/
 ├── app/
 │   ├── __init__.py
-│   ├── main.py          # FastAPI приложение
-│   ├── config.py        # Конфигурация
+│   ├── main.py          # FastAPI application
+│   ├── config.py        # Configuration
 │   └── database.py      # SQLAlchemy setup
-├── requirements.txt     # Python зависимости
-├── .env.example         # Пример конфигурации
-├── .env                 # Локальная конфигурация (не коммитить!)
-├── Dockerfile           # Docker образ
-└── README.md           # Этот файл
+├── requirements.txt     # Python dependencies
+├── .env.example         # Example configuration
+├── .env                 # Local configuration (don't commit!)
+├── Dockerfile           # Docker image
+└── README.md           # This file
 ```
 
-## Тестирование
+## Testing
 
-### Unit тесты (без БД)
+### Unit Tests (without DB)
 
 ```bash
-# Запустить все unit тесты
+# Run all unit tests
 pytest -m unit -v
 
-# Запустить тесты моделей
+# Run model tests
 pytest tests/test_models.py -v
 ```
 
-### Integration тесты (требуют PostgreSQL)
+### Integration Tests (require PostgreSQL)
 
 ```bash
-# Запустить integration тесты
+# Run integration tests
 pytest -m integration -v
 
-# Запустить тесты подключения к БД
+# Run database connection tests
 pytest tests/test_database.py -v
 ```
 
-### Все тесты
+### All Tests
 
 ```bash
-# Запустить все тесты
+# Run all tests
 pytest -v
 
-# С покрытием кода
+# With code coverage
 pytest --cov=app --cov-report=html
 ```
 
-**См. [tests/README.md](tests/README.md) для детальной документации по тестированию.**
+**See [tests/README.md](tests/README.md) for detailed testing documentation.**
 
-### Проверка API
+### API Verification
 
 ```bash
-# Проверить health endpoint
+# Check health endpoint
 curl http://localhost:8000/api/v1/health
 
-# Ожидаемый ответ:
+# Expected response:
 # {"status": "healthy", "version": "1.0.0", "environment": "development"}
 ```
 
 ## Docker
 
 ```bash
-# Собрать образ
+# Build image
 docker build -t frantai-backend .
 
-# Запустить контейнер
+# Run container
 docker run -p 8000:8000 --env-file .env frantai-backend
 ```
 
-## Разработка
+## Development
 
-При добавлении новых зависимостей:
+When adding new dependencies:
 
 ```bash
 pip install <package>
 pip freeze > requirements.txt
 ```
 
-## Зависимости
+## Dependencies
 
-- **FastAPI** - Веб фреймворк
-- **Uvicorn** - ASGI сервер
-- **SQLAlchemy** - ORM для работы с БД
-- **AsyncPG** - Async PostgreSQL драйвер
-- **pgvector** - Векторные операции в PostgreSQL
-- **Sentence Transformers** - Embeddings модели
-- **httpx** - HTTP клиент для Ollama
+- **FastAPI** - Web framework
+- **Uvicorn** - ASGI server
+- **SQLAlchemy** - ORM for database
+- **AsyncPG** - Async PostgreSQL driver
+- **pgvector** - Vector operations in PostgreSQL
+- **Sentence Transformers** - Embedding models
+- **httpx** - HTTP client for Ollama
 - **slowapi** - Rate limiting
