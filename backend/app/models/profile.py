@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Date, Boolean, ARRAY, Float, ForeignKey, TIMESTAMP
+from sqlalchemy import Column, Integer, String, Text, Date, Boolean, Float, ForeignKey, TIMESTAMP, JSON
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.database import Base
@@ -31,8 +31,8 @@ class WorkExperience(Base):
     end_date = Column(Date)
     is_current = Column(Boolean, default=False)
     description = Column(Text)
-    achievements = Column(ARRAY(Text))
-    technologies = Column(ARRAY(Text))
+    achievements = Column(JSON)  # List of strings
+    technologies = Column(JSON)  # List of strings
     order_index = Column(Integer, default=0)
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
@@ -67,11 +67,11 @@ class Project(Base):
     role = Column(String(200))
     start_date = Column(Date)
     end_date = Column(Date)
-    technologies = Column(ARRAY(Text))
+    technologies = Column(JSON)  # List of strings
     project_url = Column(String(300))
     github_url = Column(String(300))
     image_url = Column(String(300))
-    highlights = Column(ARRAY(Text))
+    highlights = Column(JSON)  # List of strings
     order_index = Column(Integer, default=0)
     is_featured = Column(Boolean, default=False)
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
