@@ -184,3 +184,79 @@ async def delete_section_item(
     await db.commit()
 
     return {"success": True, "message": f"Item deleted from {table}"}
+
+@router.post("/reindex")
+async def reindex_knowledge_base(
+    tables: list[str] = None,
+    db: AsyncSession = Depends(get_db),
+    _: bool = Depends(verify_admin_access)
+):
+    """
+    Reindex all or specific profile data into knowledge chunks.
+
+    Args:
+        tables: Optional list of tables to reindex. If None, reindex all.
+                Supported: ["profile_basics", "work_experience", "projects",
+                           "skill_categories", "education"]
+    """
+    import time
+    from app.services.indexing import IndexingService
+
+    start_time = time.time()
+
+    indexing_service = IndexingService(db)
+
+    if not tables:
+        # Reindex everything
+        stats = await indexing_service.index_all()
+    else:
+        # Reindex specific tables
+        stats = {}
+
+        if "profile_basics" in tables:
+            result = await db.execute(select(ProfileBasics))
+            basics = result.scalar_one_or_none()
+            if basics:
+                stats["profile_basics"] = await indexing_service.index_profile_basics(basics.id)
+
+        if "work_experience" in tables:
+            result = await db.execute(select(WorkExperience))
+            experiences = result.scalars().all()
+            chunks = 0
+            for exp in experiences:
+                chunks += await indexing_service.index_work_experience(exp.id)
+            stats["work_experience"] = chunks
+
+        if "projects" in tables:
+            result = await db.execute(select(Project))
+            projects = result.scalars().all()
+            chunks = 0
+            for project in projects:
+                chunks += await indexing_service.index_project(project.id)
+            stats["projects"] = chunks
+
+        if "skill_categories" in tables:
+            result = await db.execute(select(SkillCategory))
+            categories = result.scalars().all()
+            chunks = 0
+            for category in categories:
+                chunks += await indexing_service.index_skill_category(category.id)
+            stats["skill_categories"] = chunks
+
+        if "education" in tables:
+            result = await db.execute(select(Education))
+            educations = result.scalars().all()
+            chunks = 0
+            for edu in educations:
+                chunks += await indexing_service.index_education(edu.id)
+            stats["education"] = chunks
+
+        stats["total_chunks"] = sum(stats.values())
+
+    duration_ms = int((time.time() - start_time) * 1000)
+
+    return {
+        "success": True,
+        "stats": stats,
+        "duration_ms": duration_ms
+    }
