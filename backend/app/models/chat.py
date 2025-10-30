@@ -1,16 +1,18 @@
+import uuid
+
 from sqlalchemy import (
+    JSON,
+    TIMESTAMP,
     Column,
+    ForeignKey,
     Integer,
     String,
     Text,
-    TIMESTAMP,
-    JSON,
-    ForeignKey,
 )
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-import uuid
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+
 from app.database import Base
 
 

@@ -1,8 +1,7 @@
-from sentence_transformers import SentenceTransformer
-from typing import List, Optional
-import numpy as np
-from functools import lru_cache
 import logging
+
+import numpy as np
+from sentence_transformers import SentenceTransformer
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +11,7 @@ class EmbeddingService:
 
     def __init__(self, model_name: str = "intfloat/multilingual-e5-base"):
         self.model_name = model_name
-        self._model: Optional[SentenceTransformer] = None
+        self._model: SentenceTransformer | None = None
 
     @property
     def model(self) -> SentenceTransformer:
@@ -23,7 +22,7 @@ class EmbeddingService:
             logger.info("Embedding model loaded successfully")
         return self._model
 
-    def create_embedding(self, text: str) -> List[float]:
+    def create_embedding(self, text: str) -> list[float]:
         """
         Create embedding for a single text.
         For E5 models, queries should be prefixed with 'query: '
@@ -35,17 +34,17 @@ class EmbeddingService:
         embedding = self.model.encode(text, convert_to_numpy=True)
         return embedding.tolist()
 
-    def create_embeddings(self, texts: List[str]) -> List[List[float]]:
+    def create_embeddings(self, texts: list[str]) -> list[list[float]]:
         """Create embeddings for multiple texts (batch processing)"""
         embeddings = self.model.encode(texts, convert_to_numpy=True)
         return embeddings.tolist()
 
-    def create_query_embedding(self, query: str) -> List[float]:
+    def create_query_embedding(self, query: str) -> list[float]:
         """Create embedding for a search query (with query prefix)"""
         prefixed_query = f"query: {query}"
         return self.create_embedding(prefixed_query)
 
-    def create_passage_embedding(self, passage: str) -> List[float]:
+    def create_passage_embedding(self, passage: str) -> list[float]:
         """Create embedding for a document passage (with passage prefix)"""
         prefixed_passage = f"passage: {passage}"
         return self.create_embedding(prefixed_passage)
@@ -57,7 +56,7 @@ class EmbeddingService:
 
     @staticmethod
     def cosine_similarity(
-        embedding1: List[float], embedding2: List[float]
+        embedding1: list[float], embedding2: list[float]
     ) -> float:
         """Calculate cosine similarity between two embeddings"""
         vec1 = np.array(embedding1)
@@ -74,7 +73,7 @@ class EmbeddingService:
 
 
 # Global instance (singleton pattern)
-_embedding_service: Optional[EmbeddingService] = None
+_embedding_service: EmbeddingService | None = None
 
 
 def get_embedding_service() -> EmbeddingService:

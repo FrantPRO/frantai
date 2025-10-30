@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, JSON, Index
-from sqlalchemy.sql import func
 from pgvector.sqlalchemy import Vector
+from sqlalchemy import JSON, TIMESTAMP, Column, Index, Integer, String, Text
+from sqlalchemy.sql import func
+
 from app.database import Base
 
 

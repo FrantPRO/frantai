@@ -1,6 +1,8 @@
-import httpx
-from typing import AsyncGenerator, Optional, Dict, Any
 import logging
+from collections.abc import AsyncGenerator
+
+import httpx
+
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -39,9 +41,9 @@ class OllamaService:
     async def generate(
         self,
         prompt: str,
-        system: Optional[str] = None,
+        system: str | None = None,
         temperature: float = 0.7,
-        max_tokens: Optional[int] = None,
+        max_tokens: int | None = None,
     ) -> str:
         """
         Generate completion (non-streaming).
@@ -77,9 +79,9 @@ class OllamaService:
     async def generate_stream(
         self,
         prompt: str,
-        system: Optional[str] = None,
+        system: str | None = None,
         temperature: float = 0.7,
-        max_tokens: Optional[int] = None,
+        max_tokens: int | None = None,
     ) -> AsyncGenerator[str, None]:
         """
         Generate completion with streaming.
@@ -130,7 +132,7 @@ class OllamaService:
 
 
 # Global instance
-_ollama_service: Optional[OllamaService] = None
+_ollama_service: OllamaService | None = None
 
 
 def get_ollama_service() -> OllamaService:

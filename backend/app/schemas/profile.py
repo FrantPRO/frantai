@@ -1,7 +1,7 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional, List
 from datetime import date
 from enum import Enum
+
+from pydantic import BaseModel, EmailStr
 
 
 # Enums
@@ -23,16 +23,16 @@ class LanguageProficiency(str, Enum):
 # Base schemas
 class ProfileBasicsBase(BaseModel):
     full_name: str
-    job_title: Optional[str] = None
-    location: Optional[str] = None
-    email: Optional[EmailStr] = None
-    phone: Optional[str] = None
-    linkedin_url: Optional[str] = None
-    github_url: Optional[str] = None
-    website_url: Optional[str] = None
-    summary: Optional[str] = None
-    bio: Optional[str] = None
-    avatar_url: Optional[str] = None
+    job_title: str | None = None
+    location: str | None = None
+    email: EmailStr | None = None
+    phone: str | None = None
+    linkedin_url: str | None = None
+    github_url: str | None = None
+    website_url: str | None = None
+    summary: str | None = None
+    bio: str | None = None
+    avatar_url: str | None = None
 
 
 class ProfileBasicsResponse(ProfileBasicsBase):
@@ -45,13 +45,13 @@ class ProfileBasicsResponse(ProfileBasicsBase):
 class WorkExperienceBase(BaseModel):
     company_name: str
     position: str
-    location: Optional[str] = None
+    location: str | None = None
     start_date: date
-    end_date: Optional[date] = None
+    end_date: date | None = None
     is_current: bool = False
-    description: Optional[str] = None
-    achievements: Optional[List[str]] = []
-    technologies: Optional[List[str]] = []
+    description: str | None = None
+    achievements: list[str] | None = []
+    technologies: list[str] | None = []
     order_index: int = 0
 
 
@@ -69,8 +69,8 @@ class SkillCategoryBase(BaseModel):
 
 class SkillBase(BaseModel):
     name: str
-    proficiency_level: Optional[ProficiencyLevel] = None
-    years_of_experience: Optional[float] = None
+    proficiency_level: ProficiencyLevel | None = None
+    years_of_experience: float | None = None
     order_index: int = 0
 
 
@@ -84,7 +84,7 @@ class SkillResponse(SkillBase):
 
 class SkillCategoryResponse(SkillCategoryBase):
     id: int
-    skills: List[SkillResponse] = []
+    skills: list[SkillResponse] = []
 
     class Config:
         from_attributes = True
@@ -92,16 +92,16 @@ class SkillCategoryResponse(SkillCategoryBase):
 
 class ProjectBase(BaseModel):
     name: str
-    short_description: Optional[str] = None
-    full_description: Optional[str] = None
-    role: Optional[str] = None
-    start_date: Optional[date] = None
-    end_date: Optional[date] = None
-    technologies: Optional[List[str]] = []
-    project_url: Optional[str] = None
-    github_url: Optional[str] = None
-    image_url: Optional[str] = None
-    highlights: Optional[List[str]] = []
+    short_description: str | None = None
+    full_description: str | None = None
+    role: str | None = None
+    start_date: date | None = None
+    end_date: date | None = None
+    technologies: list[str] | None = []
+    project_url: str | None = None
+    github_url: str | None = None
+    image_url: str | None = None
+    highlights: list[str] | None = []
     order_index: int = 0
     is_featured: bool = False
 
@@ -115,13 +115,13 @@ class ProjectResponse(ProjectBase):
 
 class EducationBase(BaseModel):
     institution: str
-    degree: Optional[str] = None
-    field_of_study: Optional[str] = None
-    location: Optional[str] = None
-    start_date: Optional[date] = None
-    end_date: Optional[date] = None
-    grade: Optional[str] = None
-    description: Optional[str] = None
+    degree: str | None = None
+    field_of_study: str | None = None
+    location: str | None = None
+    start_date: date | None = None
+    end_date: date | None = None
+    grade: str | None = None
+    description: str | None = None
     order_index: int = 0
 
 
@@ -134,7 +134,7 @@ class EducationResponse(EducationBase):
 
 class LanguageBase(BaseModel):
     name: str
-    proficiency: Optional[LanguageProficiency] = None
+    proficiency: LanguageProficiency | None = None
     order_index: int = 0
 
 
@@ -147,11 +147,11 @@ class LanguageResponse(LanguageBase):
 
 class CertificationBase(BaseModel):
     name: str
-    issuing_organization: Optional[str] = None
-    issue_date: Optional[date] = None
-    expiry_date: Optional[date] = None
-    credential_id: Optional[str] = None
-    credential_url: Optional[str] = None
+    issuing_organization: str | None = None
+    issue_date: date | None = None
+    expiry_date: date | None = None
+    credential_id: str | None = None
+    credential_url: str | None = None
     order_index: int = 0
 
 
@@ -164,18 +164,18 @@ class CertificationResponse(CertificationBase):
 
 # Complete profile response
 class CompleteProfileResponse(BaseModel):
-    basics: Optional[ProfileBasicsResponse] = None
-    experience: List[WorkExperienceResponse] = []
-    skills: List[SkillCategoryResponse] = []
-    projects: List[ProjectResponse] = []
-    education: List[EducationResponse] = []
-    languages: List[LanguageResponse] = []
-    certifications: List[CertificationResponse] = []
+    basics: ProfileBasicsResponse | None = None
+    experience: list[WorkExperienceResponse] = []
+    skills: list[SkillCategoryResponse] = []
+    projects: list[ProjectResponse] = []
+    education: list[EducationResponse] = []
+    languages: list[LanguageResponse] = []
+    certifications: list[CertificationResponse] = []
 
 
 # Admin schemas for updates
 class ProfileUpdateRequest(BaseModel):
     section: str  # "basics", "experience", "skills", etc.
     action: str  # "create", "update", "delete"
-    id: Optional[int] = None
-    data: Optional[dict] = None
+    id: int | None = None
+    data: dict | None = None

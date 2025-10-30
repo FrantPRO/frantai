@@ -60,6 +60,8 @@ ignore = [
     "PLR0913", # too many arguments (sometimes necessary)
     "ARG001",  # unused function argument (in FastAPI route handlers)
     "ARG002",  # unused method argument (can be intentional in classes)
+    "RUF001",  # ambiguous characters (we use Cyrillic for Russian messages)
+    "PLC0415", # import within function (to avoid circular imports)
 ]
 
 [tool.ruff.lint.per-file-ignores]

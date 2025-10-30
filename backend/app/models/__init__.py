@@ -1,28 +1,28 @@
 from app.database import Base
+from app.models.chat import ChatMessage, ChatSession
+from app.models.knowledge import KnowledgeChunk
 from app.models.profile import (
-    ProfileBasics,
-    WorkExperience,
-    SkillCategory,
-    Skill,
-    Project,
+    Certification,
     Education,
     Language,
-    Certification,
+    ProfileBasics,
+    Project,
+    Skill,
+    SkillCategory,
+    WorkExperience,
 )
-from app.models.chat import ChatSession, ChatMessage
-from app.models.knowledge import KnowledgeChunk
 
 __all__ = [
     "Base",
-    "ProfileBasics",
-    "WorkExperience",
-    "SkillCategory",
-    "Skill",
-    "Project",
-    "Education",
-    "Language",
     "Certification",
-    "ChatSession",
     "ChatMessage",
+    "ChatSession",
+    "Education",
     "KnowledgeChunk",
+    "Language",
+    "ProfileBasics",
+    "Project",
+    "Skill",
+    "SkillCategory",
+    "WorkExperience",
 ]

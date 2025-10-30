@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from app.api.v1 import profile, admin
+
+from app.api.v1 import admin, profile
 
 api_router = APIRouter()
 

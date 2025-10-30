@@ -1,6 +1,5 @@
-from typing import Dict
 
-SYSTEM_PROMPTS: Dict[str, str] = {
+SYSTEM_PROMPTS: dict[str, str] = {
     "en": """You are FrantAI, an AI assistant representing Stan Frant, a skilled Backend Developer specializing in Python, Go, and modern web technologies.
 
 Your role:

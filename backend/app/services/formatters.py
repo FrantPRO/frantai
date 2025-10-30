@@ -3,16 +3,16 @@ Formatters for converting database models to text chunks.
 Used by indexing service to create searchable content.
 """
 
-from typing import List
+
 from app.models.profile import (
-    ProfileBasics,
-    WorkExperience,
-    Project,
+    Certification,
     Education,
     Language,
-    Certification,
+    ProfileBasics,
+    Project,
     Skill,
     SkillCategory,
+    WorkExperience,
 )
 
 
@@ -179,7 +179,7 @@ def format_certification(cert: Certification) -> str:
     return "\n".join(parts)
 
 
-def format_skill_category(category: SkillCategory, skills: List[Skill]) -> str:
+def format_skill_category(category: SkillCategory, skills: list[Skill]) -> str:
     """Format SkillCategory with skills into searchable text"""
     parts = []
 

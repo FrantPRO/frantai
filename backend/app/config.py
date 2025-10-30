@@ -1,5 +1,5 @@
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List
 
 
 class Settings(BaseSettings):
@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     # API
     api_v1_prefix: str = "/api/v1"
-    cors_origins: List[str] = [
+    cors_origins: list[str] = [
         "http://localhost:3000",
         "http://localhost:5173",
         "https://stan.frant.pro",

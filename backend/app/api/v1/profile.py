@@ -1,18 +1,19 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+
 from app.api.deps import get_db
-from app.schemas.profile import CompleteProfileResponse
 from app.models.profile import (
-    ProfileBasics,
-    WorkExperience,
-    SkillCategory,
-    Project,
+    Certification,
     Education,
     Language,
-    Certification,
+    ProfileBasics,
+    Project,
+    SkillCategory,
+    WorkExperience,
 )
+from app.schemas.profile import CompleteProfileResponse
 
 router = APIRouter()
 

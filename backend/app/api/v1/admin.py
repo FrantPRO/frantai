@@ -1,19 +1,21 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
-from datetime import datetime, date
+
 from app.api.deps import get_db, verify_admin_access
-from app.schemas.profile import ProfileUpdateRequest, CompleteProfileResponse
 from app.models.profile import (
-    ProfileBasics,
-    WorkExperience,
-    SkillCategory,
-    Skill,
-    Project,
+    Certification,
     Education,
     Language,
-    Certification,
+    ProfileBasics,
+    Project,
+    Skill,
+    SkillCategory,
+    WorkExperience,
 )
+from app.schemas.profile import CompleteProfileResponse, ProfileUpdateRequest
 
 router = APIRouter()
 
@@ -102,7 +104,7 @@ async def update_profile_section(
             "id": instance.id,
         }
 
-    elif request.action == "update":
+    if request.action == "update":
         # Update existing record
         if not request.id or not request.data:
             raise HTTPException(
@@ -133,7 +135,7 @@ async def update_profile_section(
             "id": instance.id,
         }
 
-    elif request.action == "delete":
+    if request.action == "delete":
         # Delete record
         if not request.id:
             raise HTTPException(
@@ -153,11 +155,10 @@ async def update_profile_section(
 
         return {"success": True, "message": f"{request.section} deleted"}
 
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid action: {request.action}",
-        )
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail=f"Invalid action: {request.action}",
+    )
 
 
 @router.delete("/profile/section/{table}/{id}")
@@ -203,6 +204,7 @@ async def reindex_knowledge_base(
                            "skill_categories", "education"]
     """
     import time
+
     from app.services.indexing import IndexingService
 
     start_time = time.time()

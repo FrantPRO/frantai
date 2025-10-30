@@ -1,7 +1,7 @@
-from typing import List, Tuple
-import re
-from langdetect import detect, LangDetectException
 import logging
+import re
+
+from langdetect import LangDetectException, detect
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ def chunk_text(
     max_tokens: int = 800,
     overlap: int = 150,
     min_chunk_size: int = 100,
-) -> List[str]:
+) -> list[str]:
     """
     Split text into chunks with overlap.
 
@@ -98,22 +98,21 @@ def chunk_text(
                 else:
                     current_chunk.append(part)
                     current_tokens += part_tokens
-        else:
-            # Normal sentence processing
-            if current_tokens + sentence_tokens > max_tokens:
-                # Save current chunk
-                if current_chunk and current_tokens >= min_chunk_size:
-                    chunks.append(" ".join(current_chunk))
+        # Normal sentence processing
+        elif current_tokens + sentence_tokens > max_tokens:
+            # Save current chunk
+            if current_chunk and current_tokens >= min_chunk_size:
+                chunks.append(" ".join(current_chunk))
 
-                # Start new chunk with overlap
-                overlap_sentences = get_overlap_sentences(
-                    current_chunk, overlap
-                )
-                current_chunk = overlap_sentences + [sentence]
-                current_tokens = sum(estimate_tokens(s) for s in current_chunk)
-            else:
-                current_chunk.append(sentence)
-                current_tokens += sentence_tokens
+            # Start new chunk with overlap
+            overlap_sentences = get_overlap_sentences(
+                current_chunk, overlap
+            )
+            current_chunk = overlap_sentences + [sentence]
+            current_tokens = sum(estimate_tokens(s) for s in current_chunk)
+        else:
+            current_chunk.append(sentence)
+            current_tokens += sentence_tokens
 
     # Add last chunk
     if current_chunk and current_tokens >= min_chunk_size:
@@ -122,7 +121,7 @@ def chunk_text(
     return chunks
 
 
-def split_into_sentences(text: str) -> List[str]:
+def split_into_sentences(text: str) -> list[str]:
     """
     Split text into sentences.
     Handles common abbreviations and edge cases.
@@ -148,8 +147,8 @@ def split_into_sentences(text: str) -> List[str]:
 
 
 def get_overlap_sentences(
-    sentences: List[str], overlap_tokens: int
-) -> List[str]:
+    sentences: list[str], overlap_tokens: int
+) -> list[str]:
     """
     Get sentences from the end that fit within overlap_tokens.
     """

@@ -3,34 +3,29 @@ Indexing service for creating and managing knowledge chunks.
 Automatically converts profile data into searchable embeddings.
 """
 
-from typing import List, Optional
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
-from sqlalchemy.orm import selectinload
 import logging
 
-from app.models.profile import (
-    ProfileBasics,
-    WorkExperience,
-    SkillCategory,
-    Skill,
-    Project,
-    Education,
-    Language,
-    Certification,
-)
+from sqlalchemy import delete, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
 from app.models.knowledge import KnowledgeChunk
-from app.services.embeddings import get_embedding_service
-from app.services.text_utils import chunk_text
-from app.services.formatters import (
-    format_profile_basics,
-    format_work_experience,
-    format_project,
-    format_education,
-    format_language,
-    format_certification,
-    format_skill_category,
+from app.models.profile import (
+    Education,
+    ProfileBasics,
+    Project,
+    SkillCategory,
+    WorkExperience,
 )
+from app.services.embeddings import get_embedding_service
+from app.services.formatters import (
+    format_education,
+    format_profile_basics,
+    format_project,
+    format_skill_category,
+    format_work_experience,
+)
+from app.services.text_utils import chunk_text
 
 logger = logging.getLogger(__name__)
 

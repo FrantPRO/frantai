@@ -1,17 +1,18 @@
 from sqlalchemy import (
+    JSON,
+    TIMESTAMP,
+    Boolean,
     Column,
+    Date,
+    Float,
+    ForeignKey,
     Integer,
     String,
     Text,
-    Date,
-    Boolean,
-    Float,
-    ForeignKey,
-    TIMESTAMP,
-    JSON,
 )
-from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+
 from app.database import Base
 
 
