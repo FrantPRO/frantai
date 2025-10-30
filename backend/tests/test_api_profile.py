@@ -23,7 +23,7 @@ async def test_get_complete_profile(client: AsyncClient, db_session):
     """Test getting complete profile with all sections"""
     # Create test data
     basics = ProfileBasics(
-        full_name="Stanislav Frant",
+        full_name="Stan Frant",
         job_title="Backend Developer",
         email="test@example.com"
     )
@@ -55,7 +55,7 @@ async def test_get_complete_profile(client: AsyncClient, db_session):
     assert response.status_code == 200
 
     data = response.json()
-    assert data["basics"]["full_name"] == "Stanislav Frant"
+    assert data["basics"]["full_name"] == "Stan Frant"
     assert len(data["experience"]) == 1
     assert data["experience"][0]["company_name"] == "Test Corp"
     assert len(data["skills"]) == 1

@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="FrantAI API",
-    description="AI-powered digital twin chat for Stanislav Frant",
+    description="AI-powered digital twin chat for Stan Frant",
     version="1.0.0",
     lifespan=lifespan
 )
