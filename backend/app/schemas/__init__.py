@@ -1,1 +1,1 @@
-from app.schemas.profile import *
+from app.schemas.profile import *  # noqa: F403

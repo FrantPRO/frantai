@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app.config import settings
 from app.database import Base
-from app.models import *  # Import all models
+from app.models import *  # Import all models  # noqa: F403
 
 config = context.config
 

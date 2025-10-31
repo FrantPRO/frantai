@@ -161,10 +161,10 @@ async def update_profile_section(
     )
 
 
-@router.delete("/profile/section/{table}/{id}")
+@router.delete("/profile/section/{table}/{item_id}")
 async def delete_section_item(
     table: str,
-    id: int,
+    item_id: int,
     db: AsyncSession = Depends(get_db),
     _: bool = Depends(verify_admin_access),
 ):
@@ -176,12 +176,12 @@ async def delete_section_item(
             detail=f"Invalid table: {table}",
         )
 
-    result = await db.execute(delete(model).where(model.id == id))
+    result = await db.execute(delete(model).where(model.id == item_id))
 
     if result.rowcount == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Item with id {id} not found in {table}",
+            detail=f"Item with id {item_id} not found in {table}",
         )
 
     await db.commit()
@@ -191,7 +191,7 @@ async def delete_section_item(
 
 @router.post("/reindex")
 async def reindex_knowledge_base(
-    tables: list[str] = None,
+    tables: list[str] | None = None,
     db: AsyncSession = Depends(get_db),
     _: bool = Depends(verify_admin_access),
 ):

@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class OllamaService:
     """Service for interacting with Ollama LLM"""
 
-    def __init__(self, host: str = None, model: str = None, timeout: int = 120):
+    def __init__(self, host: str | None = None, model: str | None = None, timeout: int = 120):
         self.host = host or settings.ollama_host
         self.model = model or settings.ollama_model
         self.timeout = timeout

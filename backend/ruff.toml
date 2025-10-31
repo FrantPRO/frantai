@@ -1,0 +1,6 @@
+# Ruff configuration
+
+# Ignore E501 (line too long) in prompts.py as it contains multi-language text
+[lint.per-file-ignores]
+"app/core/prompts.py" = ["E501"]
+"alembic/**/*.py" = ["INP001"]

@@ -31,7 +31,7 @@ async def verify_admin_access(x_admin_token: str = Header(None)) -> bool:
 
     # TODO: Implement real verification
     # For now, accept "dev-admin-token" for development
-    if x_admin_token != "dev-admin-token":
+    if x_admin_token != "dev-admin-token":  # noqa: S105
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Invalid admin token"
         )
