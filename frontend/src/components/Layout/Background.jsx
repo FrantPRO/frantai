@@ -6,9 +6,7 @@ const StaticBackground = () => (
             left: 0,
             width: "100%",
             height: "100%",
-            backgroundImage: `image-set(
-                url("/background.jpg") type("image/jpeg") 1x
-            )`,
+            backgroundImage: 'url("/background.jpg")',
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
