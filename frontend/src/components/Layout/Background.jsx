@@ -1,20 +1,21 @@
-import { Box } from '@mui/material';
-
-function Background() {
-  return (
-    <Box
-      sx={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: -1,
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        opacity: 0.05,
-      }}
+const StaticBackground = () => (
+    <div
+        style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundImage: `image-set(
+                url("/background.jpg") type("image/jpeg") 1x
+            )`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            opacity: 0.12,
+            zIndex: -1,
+        }}
     />
-  );
-}
+);
 
-export default Background;
+export default StaticBackground;
