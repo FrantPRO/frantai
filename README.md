@@ -5,7 +5,8 @@
 FrantAI is a RAG-powered (Retrieval-Augmented Generation) chatbot that provides intelligent responses about Stan Frant's professional background, skills, experience, and projects. Built with modern web technologies and local LLM inference.
 
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green.svg)](https://fastapi.tiangolo.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.120-green.svg)]
+(https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg)](https://www.docker.com/)
 [![Ollama](https://img.shields.io/badge/Ollama-Mistral_7B-black.svg)](https://ollama.ai/)
