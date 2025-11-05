@@ -32,15 +32,70 @@ const iconMap = {
     Email: <Email fontSize="small"/>
 };
 
+// Transform new API format to old format
+const transformProfileData = (apiData) => {
+    const basics = apiData.basics || {};
+
+    // Build contacts array from basics
+    const contacts = [];
+    if (basics.linkedin_url) contacts.push({ type: 'LinkedIn', url: basics.linkedin_url });
+    if (basics.github_url) contacts.push({ type: 'GitHub', url: basics.github_url });
+    if (basics.email) contacts.push({ type: 'Email', url: `mailto:${basics.email}` });
+
+    // Transform education (take first from array)
+    const education = apiData.education && apiData.education[0] ? {
+        field: apiData.education[0].field_of_study,
+        degree: apiData.education[0].degree_type,
+        university: apiData.education[0].institution_name,
+        location: apiData.education[0].location,
+        specialization: apiData.education[0].field_of_study,
+        period: `${apiData.education[0].start_year} - ${apiData.education[0].end_year || 'Present'}`
+    } : null;
+
+    // Transform skills to technologies_and_tools
+    const technologies_and_tools = apiData.skills?.map(skill => skill.skill_name) || [];
+
+    // Transform experience
+    const experience = apiData.experience?.map(exp => ({
+        position: exp.position,
+        company: exp.company_name,
+        period: `${exp.start_date}${exp.is_current ? ' - Present' : ` - ${exp.end_date}`}`,
+        details: exp.achievements?.map(ach => ({ title: ach, description: '' })) || [],
+        tech_stack: exp.technologies?.join(', ') || ''
+    })) || [];
+
+    // Transform certifications to certificates
+    const certificates = apiData.certifications?.map(cert => ({
+        name: cert.certification_name,
+        link: cert.credential_url ? `<a href="${cert.credential_url}" target="_blank" rel="noopener noreferrer">(view)</a>` : ''
+    })) || [];
+
+    return {
+        work_name: basics.full_name,
+        legal_name: basics.full_name,
+        aboutme: basics.bio || basics.summary,
+        contacts,
+        experience,
+        education,
+        technologies_and_tools,
+        languages: apiData.languages?.map(lang => `${lang.language_name} (${lang.proficiency_level})`) || [],
+        projects: apiData.projects?.map(proj => proj.project_name) || [],
+        certificates
+    };
+};
+
 export default function Intro() {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        fetch(`${apiUrl}/intro`)
+        fetch(`${apiUrl}/profile`)
             .then((res) => res.json())
-            .then((data) => setData(data))
-            .catch(() => {
-                console.error("Failed to fetch resume data");
+            .then((apiData) => {
+                const transformed = transformProfileData(apiData);
+                setData(transformed);
+            })
+            .catch((err) => {
+                console.error("Failed to fetch resume data", err);
             });
     }, []);
 

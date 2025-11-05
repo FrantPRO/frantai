@@ -1,4 +1,7 @@
+import json
+from typing import Any
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -25,6 +28,13 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "https://stan.frant.pro",
     ]
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v: Any) -> list[str]:
+        if isinstance(v, str):
+            return json.loads(v)
+        return v
 
     # Rate Limiting
     rate_limit_per_minute: int = 25
