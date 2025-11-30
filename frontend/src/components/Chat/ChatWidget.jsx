@@ -21,6 +21,18 @@ function ChatWidget() {
     }
   }, []);
 
+  // Add initial greeting message when chat opens for the first time
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      const greetingMessage = {
+        role: 'assistant',
+        content: "Hi! I'm here to help answer any questions you have about Stan Frant. What would you like to know?",
+        timestamp: new Date().toISOString(),
+      };
+      setMessages([greetingMessage]);
+    }
+  }, [isOpen]);
+
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
@@ -82,6 +94,18 @@ function ChatWidget() {
 
         if (data.done) {
           setIsLoading(false);
+          // Save response time to the last message
+          if (data.response_time_ms) {
+            setMessages((prev) => {
+              const newMessages = [...prev];
+              const lastIndex = newMessages.length - 1;
+              newMessages[lastIndex] = {
+                ...newMessages[lastIndex],
+                response_time_ms: data.response_time_ms,
+              };
+              return newMessages;
+            });
+          }
         }
       }
     } catch (error) {

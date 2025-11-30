@@ -49,27 +49,13 @@ function ChatWindow({
           bgcolor: 'background.default',
         }}
       >
-        {messages.length === 0 ? (
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              color: 'text.secondary',
-            }}
-          >
-            Ask me anything about Stan Frant
-          </Box>
-        ) : (
-          messages.map((message, index) => (
-            <ChatMessage
-              key={index}
-              message={message}
-              isLast={index === messages.length - 1}
-            />
-          ))
-        )}
+        {messages.map((message, index) => (
+          <ChatMessage
+            key={index}
+            message={message}
+            isLast={index === messages.length - 1}
+          />
+        ))}
         <div ref={messagesEndRef} />
       </Box>
 
