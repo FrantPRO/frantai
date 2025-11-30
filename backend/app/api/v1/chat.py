@@ -85,6 +85,14 @@ async def chat_message(
             # Send session_id first
             yield f"data: {json.dumps({'session_id': str(session_id)})}\n\n"
 
+            # Detect language and retrieve chunks before streaming
+            from app.services.text_utils import detect_language
+            language = detect_language(chat_request.message)
+            chunks = await rag_service.vector_search(
+                query=chat_request.message, top_k=3
+            )
+            chunk_ids = [chunk.id for chunk in chunks] if chunks else []
+
             # Stream response from RAG
             full_response = ""
             async for token in rag_service.chat(
@@ -101,18 +109,20 @@ async def chat_message(
             }
             yield f"data: {json.dumps(done_data)}\n\n"
 
-            # Log assistant message
+            # Log assistant message with metadata
             assistant_message = ChatMessage(
                 session_id=session_id,
                 role="assistant",
                 content=full_response,
                 response_time_ms=response_time,
+                language_detected=language,
+                retrieved_chunks=chunk_ids,
             )
             db.add(assistant_message)
 
             # Update session
             session.message_count += 2  # user + assistant
-            session.last_message_at = datetime.now(UTC)
+            session.last_message_at = datetime.now(UTC).replace(tzinfo=None)
 
             await db.commit()
 

@@ -65,9 +65,9 @@ class RAGService:
                 source_table,
                 source_id,
                 chunk_metadata,
-                1 - (embedding <=> :embedding::vector) AS similarity
+                1 - (embedding <=> CAST(:embedding AS vector)) AS similarity
             FROM knowledge_chunks
-            WHERE 1 - (embedding <=> :embedding::vector) > :threshold
+            WHERE 1 - (embedding <=> CAST(:embedding AS vector)) > :threshold
             ORDER BY similarity DESC
             LIMIT :limit
         """

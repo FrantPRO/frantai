@@ -68,11 +68,14 @@ function ChatWidget() {
           setSessionIdState(data.session_id);
         }
 
-        if (data.chunk) {
+        if (data.token) {
           setMessages((prev) => {
             const newMessages = [...prev];
-            const lastMessage = newMessages[newMessages.length - 1];
-            lastMessage.content += data.chunk;
+            const lastIndex = newMessages.length - 1;
+            newMessages[lastIndex] = {
+              ...newMessages[lastIndex],
+              content: newMessages[lastIndex].content + data.token,
+            };
             return newMessages;
           });
         }
@@ -85,10 +88,12 @@ function ChatWidget() {
       console.error('Failed to send message:', error);
       setMessages((prev) => {
         const newMessages = [...prev];
-        const lastMessage = newMessages[newMessages.length - 1];
-        lastMessage.content =
-          'Error: Failed to get response. Please try again.';
-        lastMessage.error = true;
+        const lastIndex = newMessages.length - 1;
+        newMessages[lastIndex] = {
+          ...newMessages[lastIndex],
+          content: 'Error: Failed to get response. Please try again.',
+          error: true,
+        };
         return newMessages;
       });
       setIsLoading(false);
