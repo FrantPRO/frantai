@@ -1,6 +1,7 @@
 import uuid
 
 from sqlalchemy import (
+    ARRAY,
     JSON,
     TIMESTAMP,
     Column,
@@ -43,7 +44,7 @@ class ChatMessage(Base):
     )
     role = Column(String(20), nullable=False)  # user or assistant
     content = Column(Text, nullable=False)
-    retrieved_chunks = Column(JSON)  # List of integers
+    retrieved_chunks = Column(ARRAY(Integer))  # List of integers
     language_detected = Column(String(10))
     response_time_ms = Column(Integer)
     created_at = Column(TIMESTAMP, server_default=func.now(), index=True)
