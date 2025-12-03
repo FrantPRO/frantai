@@ -106,6 +106,8 @@ docker-compose up -d
 4. Download Ollama model:
 ```bash
 ./scripts/download-models.sh
+# Or manually:
+# docker-compose exec ollama ollama pull mistral:7b-instruct-q4_0
 ```
 
 5. Run database migrations:
@@ -123,6 +125,8 @@ curl -X POST http://localhost:8000/api/v1/admin/reindex \
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - API Docs: http://localhost:8000/docs
+
+**⚠️ First Run Note**: The first chat request will take 5-10 minutes as the embedding model (~500MB) downloads from HuggingFace. This happens only once - the model is cached in a Docker volume for instant loading on subsequent runs.
 
 ## Development
 
@@ -306,6 +310,8 @@ OLLAMA_MODEL=mistral:7b-instruct-q4_0
 
 # Embeddings
 EMBEDDING_MODEL=intfloat/multilingual-e5-base
+HF_HOME=/app/.cache/huggingface              # HuggingFace cache directory
+TRANSFORMERS_CACHE=/app/.cache/huggingface   # Transformers cache directory
 
 # CORS
 CORS_ORIGINS=["http://localhost:3000"]
@@ -346,8 +352,19 @@ The RAG (Retrieval-Augmented Generation) system provides accurate answers by:
 
 - **Response Time**: < 500ms for vector search
 - **LLM Generation**: ~2-3s for 200 token response (Mistral 7B)
-- **Embedding**: ~100ms per query
+- **Embedding**: ~100ms per query (after model is cached)
 - **Rate Limits**: 25 req/min per IP
+
+### Model Caching
+
+To ensure fast responses after container restarts, embedding models are cached in a Docker volume:
+
+- **Volume**: `huggingface_cache` - persists downloaded models
+- **First Request**: 5-10 minutes (downloads ~500MB model from HuggingFace)
+- **Subsequent Requests**: < 1 second (loads from cache)
+- **After Restart**: Instant - model loads from volume
+
+The cache volume is automatically created and managed by Docker Compose. No manual intervention needed!
 
 ## Contributing
 
